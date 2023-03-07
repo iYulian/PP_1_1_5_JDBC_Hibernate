@@ -1,9 +1,6 @@
 package jm.task.core.jdbc.service;
 
 import jm.task.core.jdbc.model.User;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
 import java.sql.*;
 import java.util.LinkedList;
