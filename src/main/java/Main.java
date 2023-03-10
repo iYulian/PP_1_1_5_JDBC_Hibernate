@@ -1,47 +1,21 @@
-import org.hibernate.HibernateException;
-import org.hibernate.Metamodel;
-import org.hibernate.query.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-
-import javax.persistence.metamodel.EntityType;
-
-import java.util.Map;
+import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
+import jm.task.core.jdbc.service.UserServiceImpl;
 
 public class Main {
-    private static final SessionFactory ourSessionFactory;
+    public static void main(String[] args) {
+        
+        UserServiceImpl userService = new UserServiceImpl();
+        userService.createUsersTable();
 
-    static {
-        try {
-            Configuration configuration = new Configuration();
-            configuration.configure();
+        userService.saveUser("Anton", "Haul", (byte) 85);
+        userService.saveUser("Jorg", "Ver", (byte) 64);
+        userService.saveUser("Li", "Cong", (byte) 48);
+        userService.saveUser("Shi", "Cin", (byte) 25);
 
-            ourSessionFactory = configuration.buildSessionFactory();
-        } catch (Throwable ex) {
-            throw new ExceptionInInitializerError(ex);
-        }
-    }
+        userService.getAllUsers().forEach(System.out::println);
 
-    public static Session getSession() throws HibernateException {
-        return ourSessionFactory.openSession();
-    }
+        userService.cleanUsersTable();
+        userService.dropUsersTable();
 
-    public static void main(final String[] args) throws Exception {
-        final Session session = getSession();
-        try {
-            System.out.println("querying all the managed entities...");
-            final Metamodel metamodel = session.getSessionFactory().getMetamodel();
-            for (EntityType<?> entityType : metamodel.getEntities()) {
-                final String entityName = entityType.getName();
-                final Query query = session.createQuery("from " + entityName);
-                System.out.println("executing: " + query.getQueryString());
-                for (Object o : query.list()) {
-                    System.out.println("  " + o);
-                }
-            }
-        } finally {
-            session.close();
-        }
     }
 }
