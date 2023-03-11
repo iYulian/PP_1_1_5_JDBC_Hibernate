@@ -15,21 +15,24 @@ public class Util {
 
     public static Connection getConnection() {
         try {
-            return  DriverManager.getConnection("jdbc:mysql://localhost:3306/Task2",
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Task2",
                     "root", "springcourse");
+            connection.setAutoCommit(false);
+            return connection;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static SessionFactory getSessionFactory() {
-        SessionFactory sessionFactory = null;
+        SessionFactory sessionFactory;
         Configuration configuration = new org.hibernate.cfg.Configuration()
                 .setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/Task2?useSSL=false")
                 .setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver")
                 .setProperty("hibernate.connection.username", "root").setProperty("hibernate.connection.password", "springcourse")
-                .setProperty("hibernate.hbm2ddl.auto", "update").setProperty("hibernate.current_session_context_class", "thread")
-                .setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect").setProperty("hibernate.show_sql", "true")
+                .setProperty("hibernate.current_session_context_class", "thread")
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect").setProperty("hibernate.show_sql", "true")
                 .addAnnotatedClass(User.class);
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties()).build();
